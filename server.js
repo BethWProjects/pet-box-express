@@ -71,12 +71,17 @@ app.get('/api/v1/pets/:id', (request, response) => {
     response.status(201).json({ id, name, type });
   });
 
-  app.put('/api/v1/pets', (request, response) => { //still need to update this function
-    const { id, name, type } = request.body;
+  app.put('/api/v1/pets/:id', (request, response) => { //still need to update this function
+    //https://www.youtube.com/watch?v=pKd0Rpw7O48 
+    const { id } = request.params;
+    const pet = app.locals.pets.find(pet => pet.id === id);
+    if (!pet) {
+      return response.sendStatus(404);
+    }
+    pet.name = request.body.name;
+    pet.type = request.body.type;
   
-    app.locals.pets.push({ id, name, type });
-  
-    response.status(201).json({ id, name, type });
+    response.send(pet);
   });
 
   app.delete('/api/v1/pets/:id', (request, response) => {  
